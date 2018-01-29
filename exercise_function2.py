@@ -67,12 +67,13 @@ assert func("lilei",callback=string.upper) == "LILEI"
 
 
 def change_str(name, callback=None):
-    if callback == string.lower:
-        return name.lower()
-    elif callback == string.upper:
-        return name.upper()
+    if isinstance(name, str):
+        if callback is not None:
+            return callback(name)
+        else:
+            return name.capitalize()
     else:
-        return name.capitalize()
+        return 'Eroor: name is not a str'
 
 
 assert change_str("lilei") == "Lilei"
@@ -85,7 +86,8 @@ assert func(7,'name','dasere') == 'name'
 assert func(1,2,3,4) == None
 '''
 
-
+'''
+不建议的做法
 def get_short_str(*kargs):
     str_in_kargs = {}
     for item in kargs:
@@ -97,6 +99,19 @@ def get_short_str(*kargs):
         # 对字典按值排序，排序结果为一个列表，元素是键，值组成的元组
         str_in_kargs = sorted(str_in_kargs.iteritems(), key=lambda x: x[1])
         return str_in_kargs[0][0]
+'''
+
+
+# 比较简单的实现方法
+
+
+def get_short_str(*kargs):
+    lis = filter(lambda x: isinstance(x, str), kargs)  # 利用filter和lambda过滤出字符串
+    lis_len = [len(x) for x in lis]
+    if lis_len:  # lis_len != []的简单写法
+        min_index = min(lis_len)
+        return lis[lis_len.index(min_index)]  # 元素在lis和len_lis中的索引是一样的
+    return None
 
 
 assert get_short_str(222, 1111, 'xixi', 'hahahah') == 'xixi'
@@ -110,8 +125,8 @@ assert func("lilei",years=4) == "lilei,years:4"
 assert func("lilei",years=10,body_weight=20) == "lilei,years:10,body_weight:20"
 
 """
-
-
+"""
+不建议的做法
 def info_str(name=None, **kwargs):
     if kwargs is None:
         return name
@@ -119,9 +134,19 @@ def info_str(name=None, **kwargs):
         info = name  # info为初始字符串
         # 对kwargs字典中的对象进行迭代，kwargs.items()是一个字典，元素是键，值元组
         for i in kwargs.items():
-            # 在初始字符串的基础上加上每次迭代的元组的键和值，中间用相应地标点连接
+            # 在初始字符串的基础上加上每次迭代的元组的键和值，中间用相应的标点连接
             info = info + ',' + str(i[0]) + ':' + str(i[1])
         return info
+"""
+
+
+# 简单的实现方式
+
+
+def info_str(name=None, **kwargs):
+    info = ['%s:%s'% (key, value) for key, value in kwargs.items()]
+    info.insert(0, name)
+    return ','.join(info)
 
 
 print info_str("lilei",years=4)
