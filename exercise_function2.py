@@ -113,12 +113,13 @@ assert func("lilei",years=10,body_weight=20) == "lilei,years:10,body_weight:20"
 
 
 def info_str(name=None, **kwargs):
-    info = []
     if kwargs is None:
         return name
     else:
-        info = name
+        info = name  # info为初始字符串
+        # 对kwargs字典中的对象进行迭代，kwargs.items()是一个字典，元素是键，值元组
         for i in kwargs.items():
+            # 在初始字符串的基础上加上每次迭代的元组的键和值，中间用相应地标点连接
             info = info + ',' + str(i[0]) + ':' + str(i[1])
         return info
 
